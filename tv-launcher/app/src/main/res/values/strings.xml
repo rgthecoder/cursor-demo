@@ -14,4 +14,6 @@
     <string name="a11y_disabled_hint">Accessibility is off. Open Settings to enable “TV Home Screen Reader”, then use Read screen.</string>
     <string name="refresh">Refresh</string>
     <string name="close">Close</string>
+    <string name="no_apps_found">No launchable apps found. Press Refresh after installing apps.</string>
+    <string name="no_apps_enable_system">No user apps to show. Select “Show system apps: OFF” to turn it ON — most TV apps are marked as system apps.</string>
 </resources>

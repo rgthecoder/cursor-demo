@@ -3,6 +3,12 @@
 Personal sideloadable **home launcher** for Android TV (Kotlin + Jetpack Compose for TV).  
 No built-in browser. Optional Accessibility Service for reading on-screen text from other apps.
 
+## Download
+
+Grab the latest APK from **[GitHub Releases](https://github.com/rgthecoder/cursor-demo/releases)** (`app-debug.apk`), copy it to your Android TV, and install (or use `adb install`).
+
+Then: press **Home** → choose **TV Home**, and optionally enable **TV Home Screen Reader** under Accessibility.
+
 ## Features
 
 - Focusable app grid (D-pad / remote)

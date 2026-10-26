@@ -46,4 +46,13 @@ class LauncherPreferences(private val context: Context) {
             prefs[showSystemAppsKey] = show
         }
     }
+
+    suspend fun toggleShowSystemApps(): Boolean {
+        var next = false
+        context.dataStore.edit { prefs ->
+            next = !(prefs[showSystemAppsKey] ?: false)
+            prefs[showSystemAppsKey] = next
+        }
+        return next
+    }
 }

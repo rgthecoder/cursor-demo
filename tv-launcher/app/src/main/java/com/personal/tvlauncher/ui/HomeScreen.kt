@@ -5,6 +5,12 @@ import android.graphics.drawable.Drawable
 import android.provider.Settings
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.focusable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsFocusedAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -21,15 +27,19 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.core.graphics.drawable.toBitmap
@@ -54,7 +64,7 @@ fun HomeScreen(
     onLaunch: (InstalledApp) -> Unit,
     onHide: (String) -> Unit,
     onUnhide: (String) -> Unit,
-    onToggleSystemApps: (Boolean) -> Unit,
+    onToggleSystemApps: () -> Unit,
     onShowHiddenManager: (Boolean) -> Unit,
     onOpenScreenReader: () -> Unit,
     onCaptureScreen: () -> Unit,
@@ -91,13 +101,25 @@ fun HomeScreen(
                             } else {
                                 "${stringResource(R.string.show_system_apps)}: OFF"
                             },
-                        ) {
-                            onToggleSystemApps(!state.showSystemApps)
-                        }
+                            onClick = onToggleSystemApps,
+                        )
                     }
                 }
 
                 Spacer(Modifier.height(20.dp))
+
+                if (state.apps.isEmpty()) {
+                    Text(
+                        text = if (state.showSystemApps) {
+                            stringResource(R.string.no_apps_found)
+                        } else {
+                            stringResource(R.string.no_apps_enable_system)
+                        },
+                        color = Color(0xFFB0BEC5),
+                        style = MaterialTheme.typography.bodyLarge,
+                        modifier = Modifier.padding(top = 8.dp, bottom = 16.dp),
+                    )
+                }
 
                 LazyVerticalGrid(
                     columns = GridCells.Adaptive(minSize = 140.dp),
@@ -138,55 +160,59 @@ fun HomeScreen(
     }
 }
 
-@OptIn(ExperimentalTvMaterial3Api::class)
 @Composable
 private fun ToolbarButton(label: String, onClick: () -> Unit) {
-    Surface(
-        onClick = onClick,
-        scale = ClickableSurfaceDefaults.scale(focusedScale = 1.05f),
-        glow = ClickableSurfaceDefaults.glow(
-            focusedGlow = Glow(elevationColor = Accent, elevation = 4.dp),
-        ),
-        colors = ClickableSurfaceDefaults.colors(
-            containerColor = PanelBg,
-            focusedContainerColor = Accent.copy(alpha = 0.35f),
-        ),
+    // TV Material Surface onClick is D-pad reliable but often ignores mouse/touch on the
+    // emulator. Use foundation clickable + key handling so both input modes work.
+    val interactionSource = remember { MutableInteractionSource() }
+    val focused by interactionSource.collectIsFocusedAsState()
+    Box(
+        modifier = Modifier
+            .clip(RoundedCornerShape(8.dp))
+            .background(if (focused) Accent.copy(alpha = 0.35f) else PanelBg)
+            .focusable(interactionSource = interactionSource)
+            .clickable(
+                interactionSource = interactionSource,
+                indication = null,
+                role = Role.Button,
+                onClick = onClick,
+            )
+            .padding(horizontal = 16.dp, vertical = 10.dp),
     ) {
         Text(
             text = label,
-            modifier = Modifier.padding(horizontal = 16.dp, vertical = 10.dp),
             color = Color.White,
             style = MaterialTheme.typography.labelLarge,
         )
     }
 }
 
-@OptIn(ExperimentalTvMaterial3Api::class)
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun AppTile(
     app: InstalledApp,
     onClick: () -> Unit,
     onLongHide: () -> Unit,
 ) {
-    Surface(
-        onClick = onClick,
-        onLongClick = onLongHide,
+    val interactionSource = remember { MutableInteractionSource() }
+    val focused by interactionSource.collectIsFocusedAsState()
+    Box(
         modifier = Modifier
             .width(140.dp)
-            .height(140.dp),
-        scale = ClickableSurfaceDefaults.scale(focusedScale = 1.08f),
-        glow = ClickableSurfaceDefaults.glow(
-            focusedGlow = Glow(elevationColor = Accent, elevation = 8.dp),
-        ),
-        colors = ClickableSurfaceDefaults.colors(
-            containerColor = PanelBg,
-            focusedContainerColor = Color(0xFF1E3A5F),
-        ),
+            .height(140.dp)
+            .clip(RoundedCornerShape(12.dp))
+            .background(if (focused) Color(0xFF1E3A5F) else PanelBg)
+            .focusable(interactionSource = interactionSource)
+            .combinedClickable(
+                interactionSource = interactionSource,
+                indication = null,
+                onClick = onClick,
+                onLongClick = onLongHide,
+            )
+            .padding(12.dp),
+        contentAlignment = Alignment.Center,
     ) {
         Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(12.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center,
         ) {

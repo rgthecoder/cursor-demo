@@ -33,7 +33,7 @@ class LauncherActivity : ComponentActivity() {
                 onLaunch = viewModel::launchApp,
                 onHide = viewModel::hideApp,
                 onUnhide = viewModel::unhideApp,
-                onToggleSystemApps = viewModel::setShowSystemApps,
+                onToggleSystemApps = viewModel::toggleShowSystemApps,
                 onShowHiddenManager = viewModel::setShowHiddenManager,
                 onOpenScreenReader = viewModel::openScreenReader,
                 onCaptureScreen = viewModel::captureScreenText,

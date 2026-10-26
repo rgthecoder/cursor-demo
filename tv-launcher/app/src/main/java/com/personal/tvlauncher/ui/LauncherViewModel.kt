@@ -113,6 +113,10 @@ class LauncherViewModel(application: Application) : AndroidViewModel(application
         viewModelScope.launch { preferences.setShowSystemApps(show) }
     }
 
+    fun toggleShowSystemApps() {
+        viewModelScope.launch { preferences.toggleShowSystemApps() }
+    }
+
     fun setShowHiddenManager(show: Boolean) {
         showHiddenManager.value = show
     }
