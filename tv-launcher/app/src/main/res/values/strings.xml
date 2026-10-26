@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">TV Home</string>
+    <string name="a11y_service_label">TV Home Screen Reader</string>
+    <string name="a11y_service_description">Allows TV Home to read on-screen text from the current app for personal-use screen content access. Enable only if you trust this sideloaded launcher.</string>
+    <string name="home_title">Apps</string>
+    <string name="read_screen">Read screen</string>
+    <string name="enable_accessibility">Enable accessibility</string>
+    <string name="show_system_apps">Show system apps</string>
+    <string name="manage_hidden">Hidden apps</string>
+    <string name="hide_app">Hide</string>
+    <string name="unhide_app">Show</string>
+    <string name="no_screen_text">No readable text from the current window. Open another app, then return here and try again — or enable Accessibility if it is off.</string>
+    <string name="a11y_disabled_hint">Accessibility is off. Open Settings to enable “TV Home Screen Reader”, then use Read screen.</string>
+    <string name="refresh">Refresh</string>
+    <string name="close">Close</string>
+</resources>
